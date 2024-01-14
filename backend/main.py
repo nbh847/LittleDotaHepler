@@ -62,6 +62,20 @@ def get_sorted_lineup(lineup) -> str:
     return ",".join(sorted(list(lineup)))
 
 
+def get_crack_lineup():
+    """
+    获取破解整容的json数据
+    :return:
+    """
+    result = {}
+    try:
+        with open("data/crack_lineup.json", "r") as file:
+            result = json.loads(file.read())
+    except Exception as e:
+        print("get_crack_lineup error:{}".format(e.args[0]))
+    return result
+
+
 def generate_latest_attack_lineup() -> list:
     """
     根据最新的竞技场对阵数据Excel生成攻击方的阵容(防守方的破解阵容)
@@ -121,4 +135,8 @@ def run():
 
 
 if __name__ == '__main__':
-    generate_latest_attack_lineup()
+    # 从Excel里获取最新的英雄数据，检查表格里的异常数据并修改
+    # get_hero()
+    # 生成破解整容
+    # generate_latest_attack_lineup()
+    get_crack_lineup()
