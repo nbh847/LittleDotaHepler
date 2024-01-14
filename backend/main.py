@@ -53,12 +53,22 @@ def guess_lineup(my_hero_pool: list, line1: list, line2: list, line3: list):
     print(profiles)
 
 
+def get_sorted_lineup(lineup) -> str:
+    """
+    获取排序好的整容
+    :param lineup:
+    :return:
+    """
+    return ",".join(sorted(list(lineup)))
+
+
 def generate_latest_attack_lineup() -> list:
     """
     根据最新的竞技场对阵数据Excel生成攻击方的阵容(防守方的破解阵容)
+    文件保存到: data/crack_lineup.json
     :return: [["1", "2", "3", "4", "5"], ["23", "24", "25", "26", "27"], ["23", "24", "75", "26", "17"]]
     """
-    data_map = set()
+    saved_res = {}
     excel = pd.read_excel("data/arena_data.xlsx")
 
     for index, row in excel.iterrows():
@@ -67,19 +77,30 @@ def generate_latest_attack_lineup() -> list:
         defend_lineup = set()
         for inner_index, values in enumerate(row.items()):
             # inner_index: 0-4 是攻, 5-9 是守，10 是进攻胜率
-            print("values", values)
+            # print("values", values)
             if inner_index <= 4:
                 attack_lineup.add(values[1])
             elif inner_index <= 9:
                 defend_lineup.add(values[1])
             elif inner_index == 10:
-                winning_rate = float(values[1])
+                try:
+                    winning_rate = round(values[1], 2)
+                except Exception as e:
+                    print("winning_rate count error:{}".format(e.args[0]))
+                    winning_rate = 0
                 if winning_rate >= 0.5:
                     # 胜率大于 50%
-                    saved_res = {defend_lineup: attack_lineup}
-        break
-    print(data_map)
-    print(len(data_map))
+                    saved_res[get_sorted_lineup(defend_lineup)] = {
+                            "defend": get_sorted_lineup(defend_lineup),
+                            "attack": get_sorted_lineup(attack_lineup),
+                            "rate": "{} %".format(winning_rate * 100)
+                        }
+    print("saved_res", saved_res)
+    print("len saved_res", len(saved_res))
+    with open("data/crack_lineup.json", "w") as file:
+        res = json.dumps(saved_res)
+        file.write(res)
+    print("生成破解阵容的数据完毕，保存路径为:{}".format("data/crack_lineup.json"))
 
 
 def run():
