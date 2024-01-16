@@ -63,24 +63,53 @@ def get_crack_lineup() -> dict:
     return result
 
 
-def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, lineup3: list):
+def guess_peak_arena_lineup(lineup1: list, lineup2: list, lineup3: list):
     """
-    猜 <巅峰竞技场> 的阵容，返回自己英雄池存在的破解阵容
+    猜 <巅峰竞技场> 的阵容;
+    巅峰竞技场的防守阵容，每队最多隐藏两个位置，要根据站位情况猜测出隐藏的英雄;
+    :param lineup1: ["白虎", "幻刺", "", "", "骨王"]
+    :param lineup2: ["", "巫医", "", "全能", "潮汐"]
+    :param lineup3: ["", "小黑", "", "军团", "末日"]
+    :return:
+    """
+    guessed_lineup = []
+    profiles = get_hero_profiles()
+
+    # 获得明面上的防守方英雄
+    known_hero = [i for i in lineup1 if i]
+    known_hero += [i for i in lineup2 if i]
+    known_hero += [i for i in lineup3 if i]
+
+    # 只要猜出两队的防守阵容，就保存这个防守阵容
+    # 第一队
+    profile_lineup1 = [profiles.get(hero) for hero in lineup1 if hero]
+    profile_lineup1 = [i for i in profile_lineup1 if i]
+    sorted_lineup1 = sorted(profile_lineup1, key=lambda x: x["location"])
+    print(sorted_lineup1)
+    # 第二队
+
+    # 第三队
+
+
+def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, lineup3: list, ignore_hero_pool=False):
+    """
+    根据自己英雄池返回 <巅峰竞技场> 破解阵容
     :param my_hero_pool: 自己的英雄池
     :param lineup1: 第一队
     :param lineup2: 第二队
     :param lineup3: 第三队
+    :param ignore_hero_pool: 忽视自己的英雄池，直接返回破解阵容
     :return:
     """
-    profiles = get_hero_profiles()
-    print(profiles)
+    guess_peak_arena_lineup(lineup1, lineup2, lineup3)
 
 
 def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool=False):
     """
     根据自己英雄池返回 <普通竞技场> 破解阵容
-    :param my_hero_pool:
-    :param defend_lineup:
+    :param my_hero_pool: 自己的英雄池
+    :param defend_lineup: 防守方的阵容
+    :param ignore_hero_pool: 忽视自己的英雄池，直接返回破解阵容
     :return:
     """
     all_crack_lineups = get_crack_lineup()
@@ -158,7 +187,13 @@ def run():
     print("小冰冰传奇助手开始运行")
     my_heros = ["光法", "大鱼", "巨魔", "影魔", "舞姬", "宙斯", "一姐", "发条", "圣堂", "死灵", "潮汐"]
     defend_lineup = ["骨王", "火猫", "精灵", "一姐", "圣堂"]
-    crack_arena_lineup(my_heros, defend_lineup, True)
+    # 获取普通竞技场的破解阵容
+    # crack_arena_lineup(my_heros, defend_lineup, True)
+    # 获取巅峰竞技场的破解阵容
+    lineup1 = ["白虎", "幻刺", "", "", "骨王"]
+    lineup2 = ["", "巫医", "", "全能", "潮汐"]
+    lineup3 = ["", "小黑", "", "军团", "末日"]
+    crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3)
 
 
 if __name__ == '__main__':
