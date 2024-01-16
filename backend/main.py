@@ -4,6 +4,8 @@ import os
 import flask
 import pandas as pd
 
+from module.sqlite3_base import HeroProfile
+
 
 def get_hero():
     """
@@ -175,12 +177,15 @@ def generate_latest_attack_lineup():
                                 "attack": get_sorted_lineup(attack_lineup),
                                 "rate": "{} %".format(winning_rate * 100)
                             }]
-    print("saved_res", saved_res)
     print("len saved_res", len(saved_res))
-    with open("data/crack_lineup.json", "w") as file:
-        res = json.dumps(saved_res)
-        file.write(res)
-    print("生成破解阵容的数据完毕，保存路径为:{}".format("data/crack_lineup.json"))
+    for key, value in saved_res.items():
+        print("key", key)
+        print("value", value)
+
+    # with open("data/crack_lineup.json", "w") as file:
+    #     res = json.dumps(saved_res)
+    #     file.write(res)
+    print("生成破解阵容的数据完毕，保存到了数据库")
 
 
 def run():
@@ -200,10 +205,16 @@ if __name__ == '__main__':
     # 从Excel里获取最新的英雄数据，检查表格里的异常数据并修改
     # get_hero()
     # 生成破解整容
-    # generate_latest_attack_lineup()
+    generate_latest_attack_lineup()
+
     # res = get_crack_lineup()
     # for key, value in res.items():
     #     print("key", key)
     #     print("value", value)
     # print("len res", len(res))
-    run()
+    # run()
+    # HeroProfile().create_table()
+    # HeroProfile().insert()
+    # HeroProfile().get()
+    # HeroProfile().execute("drop table hero;")
+    # HeroProfile().execute("DELETE FROM hero WHERE id = 2;")
