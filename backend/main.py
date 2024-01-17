@@ -51,20 +51,6 @@ def get_sorted_lineup(lineup) -> str:
     return ",".join(sorted(list(lineup)))
 
 
-def get_crack_lineup() -> dict:
-    """
-    获取破解整容的json数据
-    :return:
-    """
-    result = {}
-    try:
-        with open("data/crack_lineup.json", "r") as file:
-            result = json.loads(file.read())
-    except Exception as e:
-        print("get_crack_lineup error:{}".format(e.args[0]))
-    return result
-
-
 def guess_peak_arena_lineup(lineup1: list, lineup2: list, lineup3: list):
     """
     猜 <巅峰竞技场> 的阵容;
@@ -114,18 +100,21 @@ def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool
     :param ignore_hero_pool: 忽视自己的英雄池，直接返回破解阵容
     :return:
     """
-    all_crack_lineups = get_crack_lineup()
     sorted_defend_lineup = get_sorted_lineup(defend_lineup)
     print("对方阵容", sorted_defend_lineup)
 
-    cracked_lineups = all_crack_lineups.get(sorted_defend_lineup)
-    if cracked_lineups:
-        for cracked_lineup in cracked_lineups:
-            lineup = cracked_lineup.get("attack")
-            rate = cracked_lineup.get("rate")
+    heros = sorted_defend_lineup.split(",")
+    statement = """SELECT * FROM arena_data where defend1='{}' and defend2='{}' and defend3='{}' and defend4='{}' and defend5='{}'""".format(
+        heros[0], heros[1], heros[2], heros[3], heros[4]
+    )
+    attack_lineups = HeroProfile().match_cracked_lineup(statement)
+    if attack_lineups:
+        for cracked_lineup in attack_lineups:
+            lineup = [i for i in cracked_lineup[1:6]]
+            rate = cracked_lineup[11]
 
             has_matched_hero = True
-            for hero in lineup.split(","):
+            for hero in lineup:
                 if hero not in my_hero_pool:
                     has_matched_hero = False
                     break
@@ -140,8 +129,8 @@ def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool
 def generate_latest_attack_lineup():
     """
     根据最新的竞技场对阵数据Excel生成攻击方的阵容(防守方的破解阵容)
-    文件保存到: data/crack_lineup.json
-    :return: [["1", "2", "3", "4", "5"], ["23", "24", "25", "26", "27"], ["23", "24", "75", "26", "17"]]
+    文件保存到sqlite3
+    :return: eg. [["1", "2", "3", "4", "5"], ["23", "24", "25", "26", "27"], ["23", "24", "75", "26", "17"]]
     """
     saved_res = {}
     excel = pd.read_excel("data/arena_data.xlsx")
@@ -180,12 +169,12 @@ def generate_latest_attack_lineup():
     print("len saved_res", len(saved_res))
     for index, value in enumerate(saved_res.items()):
         print("写入第:{}行的数据".format(index + 1))
-        print("value", value)
         for item in value[1]:
             defends = item.get("defend").split(",")
             attacks = item.get("attack").split(",")
             rate = item.get("rate")
-            print("attacks", attacks)
+            if len(attacks) < 5 or len(defends) < 5:
+                continue
             data = attacks + defends + [rate]
             print('data', data)
             HeroProfile().insert(data)
@@ -198,28 +187,23 @@ def run():
     my_heros = ["光法", "大鱼", "巨魔", "影魔", "舞姬", "宙斯", "一姐", "发条", "圣堂", "死灵", "潮汐"]
     defend_lineup = ["骨王", "火猫", "精灵", "一姐", "圣堂"]
     # 获取普通竞技场的破解阵容
-    # crack_arena_lineup(my_heros, defend_lineup, True)
+    crack_arena_lineup(my_heros, defend_lineup, True)
     # 获取巅峰竞技场的破解阵容
-    lineup1 = ["白虎", "幻刺", "", "", "骨王"]
-    lineup2 = ["", "巫医", "", "全能", "潮汐"]
-    lineup3 = ["", "小黑", "", "军团", "末日"]
-    crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3)
+    # lineup1 = ["白虎", "幻刺", "", "", "骨王"]
+    # lineup2 = ["", "巫医", "", "全能", "潮汐"]
+    # lineup3 = ["", "小黑", "", "军团", "末日"]
+    # crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3)
 
 
 if __name__ == '__main__':
     # 从Excel里获取最新的英雄数据，检查表格里的异常数据并修改
     # get_hero()
     # 生成破解整容
-    generate_latest_attack_lineup()
+    # generate_latest_attack_lineup()
 
-    # res = get_crack_lineup()
-    # for key, value in res.items():
-    #     print("key", key)
-    #     print("value", value)
-    # print("len res", len(res))
-    # run()
+    run()
     # HeroProfile().create_table()
     # HeroProfile().clear_table("arena_data")
-    # HeroProfile().get()
+    # HeroProfile().get_all("arena_data")
     # HeroProfile().execute("drop table hero;")
     # HeroProfile().execute("DELETE FROM hero WHERE id = 2;")

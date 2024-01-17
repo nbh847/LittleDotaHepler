@@ -54,11 +54,23 @@ class HeroProfile:
         """
         self.execute("DELETE FROM {};".format(table_name))
 
-    def get(self, table_name=""):
+    def get_all(self, table_name):
         # 查询数据
-        rows = self.cursor.execute("SELECT * FROM arena_data").fetchall()
+        rows = self.cursor.execute("SELECT * FROM {}".format(table_name)).fetchall()
         for row in rows:
             print(row)
+
+    def match_cracked_lineup(self, statement):
+        """
+        匹配破解阵容
+        :param statement:
+        :return:
+        """
+        res = []
+        rows = self.cursor.execute(statement)
+        for row in rows:
+            res.append(row)
+        return res
 
     def insert(self, data: list):
         statement = """INSERT OR REPLACE INTO arena_data ( 
