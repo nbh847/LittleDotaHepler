@@ -169,22 +169,27 @@ def generate_latest_attack_lineup():
                         saved_res.get(get_sorted_lineup(defend_lineup)).append({
                                 "defend": get_sorted_lineup(defend_lineup),
                                 "attack": get_sorted_lineup(attack_lineup),
-                                "rate": "{} %".format(winning_rate * 100)
+                                "rate": winning_rate * 100
                             })
                     else:
                         saved_res[get_sorted_lineup(defend_lineup)] = [{
                                 "defend": get_sorted_lineup(defend_lineup),
                                 "attack": get_sorted_lineup(attack_lineup),
-                                "rate": "{} %".format(winning_rate * 100)
+                                "rate": winning_rate * 100
                             }]
     print("len saved_res", len(saved_res))
-    for key, value in saved_res.items():
-        print("key", key)
+    for index, value in enumerate(saved_res.items()):
+        print("写入第:{}行的数据".format(index + 1))
         print("value", value)
+        for item in value[1]:
+            defends = item.get("defend").split(",")
+            attacks = item.get("attack").split(",")
+            rate = item.get("rate")
+            print("attacks", attacks)
+            data = attacks + defends + [rate]
+            print('data', data)
+            HeroProfile().insert(data)
 
-    # with open("data/crack_lineup.json", "w") as file:
-    #     res = json.dumps(saved_res)
-    #     file.write(res)
     print("生成破解阵容的数据完毕，保存到了数据库")
 
 
@@ -214,7 +219,7 @@ if __name__ == '__main__':
     # print("len res", len(res))
     # run()
     # HeroProfile().create_table()
-    # HeroProfile().insert()
+    # HeroProfile().clear_table("arena_data")
     # HeroProfile().get()
     # HeroProfile().execute("drop table hero;")
     # HeroProfile().execute("DELETE FROM hero WHERE id = 2;")
