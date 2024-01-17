@@ -32,7 +32,7 @@ def get_hero_profiles() -> dict:
     获取所有英雄的各项数据
     :return:
     """
-    result = []
+    result = {}
     try:
         with open("data/hero_profile.json", "r") as file:
             res = file.read()
@@ -40,6 +40,18 @@ def get_hero_profiles() -> dict:
     except Exception as e:
         print("获取所有英雄的各项数据 error:{}".format(e.args[0]))
     return result
+
+
+def sort_defend_lineup(defends: list) -> list:
+    """
+    按照英雄的站位排序
+    :param defends:
+    :return:
+    """
+    profiles = get_hero_profiles()
+    sort_items = {i: int(profiles.get(i).get("location")) for i in defends}
+    sorted_keys = [k for k, v in sorted(sort_items.items(), key=lambda item: item[1])]
+    return sorted_keys
 
 
 def get_sorted_lineup(lineup) -> str:
@@ -55,9 +67,11 @@ def guess_peak_arena_lineup(lineup1: list, lineup2: list, lineup3: list):
     """
     猜 <巅峰竞技场> 的阵容;
     巅峰竞技场的防守阵容，每队最多隐藏两个位置，要根据站位情况猜测出隐藏的英雄;
-    :param lineup1: ["白虎", "幻刺", "", "", "骨王"]
-    :param lineup2: ["", "巫医", "", "全能", "潮汐"]
-    :param lineup3: ["", "小黑", "", "军团", "末日"]
+    防守方显示的站位顺序跟进攻方完全相反，前排是站在左边；
+    传入的阵容的位置一定要严格按照顺序
+    :param lineup1: ["骨王", "", "", "幻刺", "白虎"]
+    :param lineup2: ["潮汐", "全能", "", "巫医", ""]
+    :param lineup3: ["末日", "军团", "", "小黑", ""]
     :return:
     """
     guessed_lineup = []
@@ -68,15 +82,22 @@ def guess_peak_arena_lineup(lineup1: list, lineup2: list, lineup3: list):
     known_hero += [i for i in lineup2 if i]
     known_hero += [i for i in lineup3 if i]
 
+    HeroProfile.generate_peak_arena_lineup_query(["潮汐", "全能", "", "巫医", ""])
+    return
+
     # 只要猜出两队的防守阵容，就保存这个防守阵容
-    # 第一队
+    # 以第一队作为参考
+    statement = """SELECT * FROM arena_data where defend1='{}' and defend2='{}' and defend3='{}' and defend4='{}' and defend5='{}'""".format(
+        heros[0], heros[1], heros[2], heros[3], heros[4]
+    )
+    HeroProfile().match_cracked_lineup(statement)
     profile_lineup1 = [profiles.get(hero) for hero in lineup1 if hero]
     profile_lineup1 = [i for i in profile_lineup1 if i]
     sorted_lineup1 = sorted(profile_lineup1, key=lambda x: x["location"])
     print(sorted_lineup1)
-    # 第二队
+    # 以第二队作为参考
 
-    # 第三队
+    # 以第三队作为参考
 
 
 def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, lineup3: list, ignore_hero_pool=False):
@@ -100,10 +121,9 @@ def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool
     :param ignore_hero_pool: 忽视自己的英雄池，直接返回破解阵容
     :return:
     """
-    sorted_defend_lineup = get_sorted_lineup(defend_lineup)
-    print("对方阵容", sorted_defend_lineup)
+    heros = sort_defend_lineup(defend_lineup)
+    print("对方阵容", heros)
 
-    heros = sorted_defend_lineup.split(",")
     statement = """SELECT * FROM arena_data where defend1='{}' and defend2='{}' and defend3='{}' and defend4='{}' and defend5='{}'""".format(
         heros[0], heros[1], heros[2], heros[3], heros[4]
     )
@@ -111,6 +131,7 @@ def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool
     if attack_lineups:
         for cracked_lineup in attack_lineups:
             lineup = [i for i in cracked_lineup[1:6]]
+            lineup = sort_defend_lineup(lineup)
             rate = cracked_lineup[11]
 
             has_matched_hero = True
@@ -128,9 +149,10 @@ def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool
 
 def generate_latest_attack_lineup():
     """
-    根据最新的竞技场对阵数据Excel生成攻击方的阵容(防守方的破解阵容)
-    文件保存到sqlite3
-    :return: eg. [["1", "2", "3", "4", "5"], ["23", "24", "25", "26", "27"], ["23", "24", "75", "26", "17"]]
+    根据最新的竞技场对阵数据Excel生成攻击方的阵容(防守方的破解阵容);
+    文件保存到sqlite3;
+    防守方的数据在保存到数据库之前，必须按照英雄的站位顺序排列好;
+    :return:
     """
     saved_res = {}
     excel = pd.read_excel("data/arena_data.xlsx")
@@ -171,6 +193,7 @@ def generate_latest_attack_lineup():
         print("写入第:{}行的数据".format(index + 1))
         for item in value[1]:
             defends = item.get("defend").split(",")
+            defends = sort_defend_lineup(defends)
             attacks = item.get("attack").split(",")
             rate = item.get("rate")
             if len(attacks) < 5 or len(defends) < 5:

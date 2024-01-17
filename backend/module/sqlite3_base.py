@@ -83,5 +83,20 @@ class HeroProfile:
         # 提交更改
         self.conn.commit()
 
+    @classmethod
+    def generate_peak_arena_lineup_query(cls, lineup: list):
+        """
+        生成巅峰竞技场阵容的 sql query 语句
+        :param lineup: eg. ["骨王", "", "", "幻刺", "白虎"], ["潮汐", "全能", "", "巫医", ""]
+        :return:
+        """
+        cond_statement = ""
+        for index, name in enumerate(lineup):
+            if name:
+                cond_statement += "defend{}='{}'".format(index + 1, name)
+        # statement = """SELECT * FROM arena_data where defend1='{}' and defend2='{}' and defend3='{}' and defend4='{}' and defend5='{}'""".format(
+        #     heros[0], heros[1], heros[2], heros[3], heros[4]
+        # )
+
     def __del__(self):
         self.conn.close()
