@@ -90,13 +90,14 @@ class HeroProfile:
         :param lineup: eg. ["骨王", "", "", "幻刺", "白虎"], ["潮汐", "全能", "", "巫医", ""]
         :return:
         """
-        cond_statement = ""
+        cond_statement = []
         for index, name in enumerate(lineup):
             if name:
-                cond_statement += "defend{}='{}'".format(index + 1, name)
-        # statement = """SELECT * FROM arena_data where defend1='{}' and defend2='{}' and defend3='{}' and defend4='{}' and defend5='{}'""".format(
-        #     heros[0], heros[1], heros[2], heros[3], heros[4]
-        # )
+                cond_statement.append("defend{}='{}'".format(index + 1, name))
+        cond_statement_str = " and ".join(cond_statement)
+        statement = "SELECT * FROM arena_data where {}".format(cond_statement_str)
+        print("statement", statement)
+        return statement
 
     def __del__(self):
         self.conn.close()

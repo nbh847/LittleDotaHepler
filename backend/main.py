@@ -82,15 +82,13 @@ def guess_peak_arena_lineup(lineup1: list, lineup2: list, lineup3: list):
     known_hero += [i for i in lineup2 if i]
     known_hero += [i for i in lineup3 if i]
 
-    HeroProfile.generate_peak_arena_lineup_query(["潮汐", "全能", "", "巫医", ""])
-    return
-
     # 只要猜出两队的防守阵容，就保存这个防守阵容
     # 以第一队作为参考
-    statement = """SELECT * FROM arena_data where defend1='{}' and defend2='{}' and defend3='{}' and defend4='{}' and defend5='{}'""".format(
-        heros[0], heros[1], heros[2], heros[3], heros[4]
-    )
-    HeroProfile().match_cracked_lineup(statement)
+    statement1 = HeroProfile.generate_peak_arena_lineup_query(lineup1)
+    matched_heros = HeroProfile().match_cracked_lineup(statement1)
+    print("matched_heros", matched_heros)
+
+    return
     profile_lineup1 = [profiles.get(hero) for hero in lineup1 if hero]
     profile_lineup1 = [i for i in profile_lineup1 if i]
     sorted_lineup1 = sorted(profile_lineup1, key=lambda x: x["location"])
@@ -210,12 +208,12 @@ def run():
     my_heros = ["光法", "大鱼", "巨魔", "影魔", "舞姬", "宙斯", "一姐", "发条", "圣堂", "死灵", "潮汐"]
     defend_lineup = ["骨王", "火猫", "精灵", "一姐", "圣堂"]
     # 获取普通竞技场的破解阵容
-    crack_arena_lineup(my_heros, defend_lineup, True)
+    # crack_arena_lineup(my_heros, defend_lineup, True)
     # 获取巅峰竞技场的破解阵容
-    # lineup1 = ["白虎", "幻刺", "", "", "骨王"]
-    # lineup2 = ["", "巫医", "", "全能", "潮汐"]
-    # lineup3 = ["", "小黑", "", "军团", "末日"]
-    # crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3)
+    lineup1 = ["白虎", "幻刺", "", "", "骨王"]
+    lineup2 = ["", "巫医", "", "全能", "潮汐"]
+    lineup3 = ["", "小黑", "", "军团", "末日"]
+    crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3)
 
 
 if __name__ == '__main__':
