@@ -96,7 +96,6 @@ class HeroProfile:
                 cond_statement.append("defend{}='{}'".format(index + 1, name))
         cond_statement_str = " and ".join(cond_statement)
         statement = "SELECT * FROM arena_data where {}".format(cond_statement_str)
-        print("statement", statement)
         return statement
 
     def __del__(self):

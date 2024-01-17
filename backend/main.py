@@ -63,15 +63,43 @@ def get_sorted_lineup(lineup) -> str:
     return ",".join(sorted(list(lineup)))
 
 
-def guess_peak_arena_lineup(lineup1: list, lineup2: list, lineup3: list):
+def get_guess_lineup(lineup: list):
+    """
+    猜测阵容的隐藏英雄，并返回破解阵容
+    :param lineup:
+    :return: [[隐藏的英雄], [可能的防守阵容], [对应的破解阵容], 胜率]
+    """
+    statement = HeroProfile.generate_peak_arena_lineup_query(lineup)
+    matched_heros = HeroProfile().match_cracked_lineup(statement)
+
+    # 保存匹配的阵容
+    saved_match_lineup = []
+    for matched_hero in matched_heros:
+        defend_lineup = matched_hero[6:-1]
+        attack_lineup = matched_hero[1:6]
+        rate = matched_hero[-1]
+        # 拿到可能的隐藏阵容
+        hidden_lineup1 = []
+        for index, item in enumerate(lineup):
+            if not item:
+                hidden_lineup1.append(defend_lineup[index])
+        # [[隐藏的英雄], [可能的防守阵容], [对应的破解阵容], 胜率]
+        saved_match_lineup.append([hidden_lineup1, defend_lineup, attack_lineup, rate])
+    print("可能匹配的阵容数据", saved_match_lineup)
+    return saved_match_lineup
+
+
+def guess_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, lineup3: list, ignore_hero_pool=False):
     """
     猜 <巅峰竞技场> 的阵容;
     巅峰竞技场的防守阵容，每队最多隐藏两个位置，要根据站位情况猜测出隐藏的英雄;
     防守方显示的站位顺序跟进攻方完全相反，前排是站在左边；
     传入的阵容的位置一定要严格按照顺序
+    :param my_hero_pool: 自己的英雄池， eg. ["骨王", "小黑", "巨魔", "幻刺", "白虎", "幻刺", "天怒"]
     :param lineup1: ["骨王", "", "", "幻刺", "白虎"]
     :param lineup2: ["潮汐", "全能", "", "巫医", ""]
     :param lineup3: ["末日", "军团", "", "小黑", ""]
+    :param ignore_hero_pool: 忽略英雄池给出阵容破解推荐
     :return:
     """
     guessed_lineup = []
@@ -84,18 +112,26 @@ def guess_peak_arena_lineup(lineup1: list, lineup2: list, lineup3: list):
 
     # 只要猜出两队的防守阵容，就保存这个防守阵容
     # 以第一队作为参考
-    statement1 = HeroProfile.generate_peak_arena_lineup_query(lineup1)
-    matched_heros = HeroProfile().match_cracked_lineup(statement1)
-    print("matched_heros", matched_heros)
-
-    return
-    profile_lineup1 = [profiles.get(hero) for hero in lineup1 if hero]
-    profile_lineup1 = [i for i in profile_lineup1 if i]
-    sorted_lineup1 = sorted(profile_lineup1, key=lambda x: x["location"])
-    print(sorted_lineup1)
+    lineups1 = get_guess_lineup(lineup1)
     # 以第二队作为参考
-
+    lineups2 = get_guess_lineup(lineup2)
     # 以第三队作为参考
+    lineups3 = get_guess_lineup(lineup3)
+
+    # 排列组合出没有重复英雄的阵容
+    for item1 in lineups1:
+        hidden1, defend1, attack1, rate1 = item1[0], item1[1], item1[2], item1[3]
+
+        # 在不忽略英雄池的情况下，如果破解阵容的英雄不在池子里，直接跳过
+        if not ignore_hero_pool:
+            skip = False
+            for inner_item in attack1:
+                if inner_item not in my_hero_pool:
+                    skip = True
+            if skip:
+                continue
+
+        # 隐藏阵容不能出现在当前的防守池子中(不能有重复英雄)
 
 
 def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, lineup3: list, ignore_hero_pool=False):
@@ -108,7 +144,7 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
     :param ignore_hero_pool: 忽视自己的英雄池，直接返回破解阵容
     :return:
     """
-    guess_peak_arena_lineup(lineup1, lineup2, lineup3)
+    guess_peak_arena_lineup(my_hero_pool, lineup1, lineup2, lineup3, ignore_hero_pool)
 
 
 def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool=False):
@@ -206,13 +242,13 @@ def generate_latest_attack_lineup():
 def run():
     print("小冰冰传奇助手开始运行")
     my_heros = ["光法", "大鱼", "巨魔", "影魔", "舞姬", "宙斯", "一姐", "发条", "圣堂", "死灵", "潮汐"]
-    defend_lineup = ["骨王", "火猫", "精灵", "一姐", "圣堂"]
+    defend_lineup = ["潮汐", "全能", "幻刺", "巫医", "暗牧"]
     # 获取普通竞技场的破解阵容
     # crack_arena_lineup(my_heros, defend_lineup, True)
     # 获取巅峰竞技场的破解阵容
-    lineup1 = ["白虎", "幻刺", "", "", "骨王"]
-    lineup2 = ["", "巫医", "", "全能", "潮汐"]
-    lineup3 = ["", "小黑", "", "军团", "末日"]
+    lineup1 = ["骨王", "", "", "幻刺", "白虎"]
+    lineup2 = ["潮汐", "全能", "", "巫医", ""]
+    lineup3 = ["末日", "军团", "", "小黑", ""]
     crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3)
 
 
