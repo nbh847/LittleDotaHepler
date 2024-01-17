@@ -39,51 +39,11 @@
     "img": "",
     "content": ""
   },
-  "小黑": {
-    "name": "小黑",
-    "type": "敏捷",
-    "position": "后排",
-    "location": "3070",
-    "img": "",
-    "content": ""
-  },
   "剑圣": {
     "name": "剑圣",
     "type": "敏捷",
     "position": "前排",
     "location": "1150",
-    "img": "",
-    "content": ""
-  },
-  "幻刺": {
-    "name": "幻刺",
-    "type": "敏捷",
-    "position": "中排",
-    "location": "2040",
-    "img": "",
-    "content": ""
-  },
-  "冰女": {
-    "name": "冰女",
-    "type": "智力",
-    "position": "中排",
-    "location": "2120",
-    "img": "",
-    "content": ""
-  },
-  "巫妖": {
-    "name": "巫妖",
-    "type": "智力",
-    "position": "中排",
-    "location": "2080",
-    "img": "",
-    "content": ""
-  },
-  "天怒": {
-    "name": "天怒",
-    "type": "智力",
-    "position": "中排",
-    "location": "2150",
     "img": "",
     "content": ""
   },
@@ -103,51 +63,11 @@
     "img": "",
     "content": ""
   },
-  "白虎": {
-    "name": "白虎",
-    "type": "敏捷",
-    "position": "后排",
-    "location": "3060",
-    "img": "",
-    "content": ""
-  },
   "电魂": {
     "name": "电魂",
     "type": "敏捷",
     "position": "前排",
     "location": "1180",
-    "img": "",
-    "content": ""
-  },
-  "DP": {
-    "name": "DP",
-    "type": "智力",
-    "position": "中排",
-    "location": "2050",
-    "img": "",
-    "content": ""
-  },
-  "术士": {
-    "name": "术士",
-    "type": "智力",
-    "position": "中排",
-    "location": "2160",
-    "img": "",
-    "content": ""
-  },
-  "巫医": {
-    "name": "巫医",
-    "type": "智力",
-    "position": "后排",
-    "location": "3050",
-    "img": "",
-    "content": ""
-  },
-  "双头": {
-    "name": "双头",
-    "type": "智力",
-    "position": "中排",
-    "location": "2060",
     "img": "",
     "content": ""
   },
@@ -175,51 +95,11 @@
     "img": "",
     "content": ""
   },
-  "骨弓": {
-    "name": "骨弓",
-    "type": "敏捷",
-    "position": "后排",
-    "location": "",
-    "img": "",
-    "content": ""
-  },
-  "月骑": {
-    "name": "月骑",
-    "type": "敏捷",
-    "position": "中排",
-    "location": "",
-    "img": "",
-    "content": ""
-  },
-  "亚龙": {
-    "name": "亚龙",
-    "type": "敏捷",
-    "position": "后排",
-    "location": "",
-    "img": "",
-    "content": ""
-  },
-  "小鹿": {
-    "name": "小鹿",
-    "type": "智力",
-    "position": "后排",
-    "location": "3040",
-    "img": "",
-    "content": ""
-  },
   "蓝胖": {
     "name": "蓝胖",
     "type": "智力",
     "position": "前排",
     "location": "1110",
-    "img": "",
-    "content": ""
-  },
-  "凤凰": {
-    "name": "凤凰",
-    "type": "力量",
-    "position": "中排",
-    "location": "2180",
     "img": "",
     "content": ""
   },
@@ -236,54 +116,6 @@
     "type": "敏捷",
     "position": "前排",
     "location": "1100",
-    "img": "",
-    "content": ""
-  },
-  "一姐": {
-    "name": "一姐",
-    "type": "敏捷",
-    "position": "中排",
-    "location": "2110",
-    "img": "",
-    "content": ""
-  },
-  "巨魔": {
-    "name": "巨魔",
-    "type": "敏捷",
-    "position": "中排",
-    "location": "2010",
-    "img": "",
-    "content": ""
-  },
-  "舞姬": {
-    "name": "舞姬",
-    "type": "智力",
-    "position": "中排",
-    "location": "2070",
-    "img": "",
-    "content": ""
-  },
-  "火女": {
-    "name": "火女",
-    "type": "智力",
-    "position": "中排",
-    "location": "2190",
-    "img": "",
-    "content": ""
-  },
-  "骨法": {
-    "name": "骨法",
-    "type": "智力",
-    "position": "中排",
-    "location": "2130",
-    "img": "",
-    "content": ""
-  },
-  "光法": {
-    "name": "光法",
-    "type": "智力",
-    "position": "后排",
-    "location": "3080",
     "img": "",
     "content": ""
   },
@@ -343,27 +175,11 @@
     "img": "",
     "content": ""
   },
-  "海民": {
-    "name": "海民",
-    "type": "力量",
-    "position": "中排",
-    "location": "2020",
-    "img": "",
-    "content": ""
-  },
   "小小": {
     "name": "小小",
     "type": "力量",
     "position": "前排",
     "location": "1030",
-    "img": "",
-    "content": ""
-  },
-  "蜘蛛": {
-    "name": "蜘蛛",
-    "type": "敏捷",
-    "position": "后排",
-    "location": "",
     "img": "",
     "content": ""
   },
@@ -383,22 +199,6 @@
     "img": "",
     "content": ""
   },
-  "影魔": {
-    "name": "影魔",
-    "type": "敏捷",
-    "position": "中排",
-    "location": "2030",
-    "img": "",
-    "content": ""
-  },
-  "火枪": {
-    "name": "火枪",
-    "type": "敏捷",
-    "position": "后排",
-    "location": "3080",
-    "img": "",
-    "content": ""
-  },
   "魂守": {
     "name": "魂守",
     "type": "敏捷",
@@ -415,11 +215,147 @@
     "img": "",
     "content": ""
   },
-  "复仇": {
-    "name": "复仇",
+  "云游武僧": {
+    "name": "云游武僧",
     "type": "敏捷",
-    "position": "后排",
-    "location": "3020",
+    "position": "前排",
+    "location": "1060",
+    "img": "",
+    "content": ""
+  },
+  "火猫": {
+    "name": "火猫",
+    "type": "敏捷",
+    "position": "前排",
+    "location": "",
+    "img": "",
+    "content": ""
+  },
+  "幻刺": {
+    "name": "幻刺",
+    "type": "敏捷",
+    "position": "中排",
+    "location": "2040",
+    "img": "",
+    "content": ""
+  },
+  "冰女": {
+    "name": "冰女",
+    "type": "智力",
+    "position": "中排",
+    "location": "2120",
+    "img": "",
+    "content": ""
+  },
+  "巫妖": {
+    "name": "巫妖",
+    "type": "智力",
+    "position": "中排",
+    "location": "2080",
+    "img": "",
+    "content": ""
+  },
+  "天怒": {
+    "name": "天怒",
+    "type": "智力",
+    "position": "中排",
+    "location": "2150",
+    "img": "",
+    "content": ""
+  },
+  "DP": {
+    "name": "DP",
+    "type": "智力",
+    "position": "中排",
+    "location": "2050",
+    "img": "",
+    "content": ""
+  },
+  "术士": {
+    "name": "术士",
+    "type": "智力",
+    "position": "中排",
+    "location": "2160",
+    "img": "",
+    "content": ""
+  },
+  "双头": {
+    "name": "双头",
+    "type": "智力",
+    "position": "中排",
+    "location": "2060",
+    "img": "",
+    "content": ""
+  },
+  "月骑": {
+    "name": "月骑",
+    "type": "敏捷",
+    "position": "中排",
+    "location": "",
+    "img": "",
+    "content": ""
+  },
+  "凤凰": {
+    "name": "凤凰",
+    "type": "力量",
+    "position": "中排",
+    "location": "2180",
+    "img": "",
+    "content": ""
+  },
+  "一姐": {
+    "name": "一姐",
+    "type": "敏捷",
+    "position": "中排",
+    "location": "2110",
+    "img": "",
+    "content": ""
+  },
+  "巨魔": {
+    "name": "巨魔",
+    "type": "敏捷",
+    "position": "中排",
+    "location": "2010",
+    "img": "",
+    "content": ""
+  },
+  "舞姬": {
+    "name": "舞姬",
+    "type": "智力",
+    "position": "中排",
+    "location": "2070",
+    "img": "",
+    "content": ""
+  },
+  "火女": {
+    "name": "火女",
+    "type": "智力",
+    "position": "中排",
+    "location": "2190",
+    "img": "",
+    "content": ""
+  },
+  "骨法": {
+    "name": "骨法",
+    "type": "智力",
+    "position": "中排",
+    "location": "2130",
+    "img": "",
+    "content": ""
+  },
+  "海民": {
+    "name": "海民",
+    "type": "力量",
+    "position": "中排",
+    "location": "2020",
+    "img": "",
+    "content": ""
+  },
+  "影魔": {
+    "name": "影魔",
+    "type": "敏捷",
+    "position": "中排",
+    "location": "2030",
     "img": "",
     "content": ""
   },
@@ -428,14 +364,6 @@
     "type": "敏捷",
     "position": "中排",
     "location": "",
-    "img": "",
-    "content": ""
-  },
-  "云游武僧": {
-    "name": "云游武僧",
-    "type": "敏捷",
-    "position": "前排",
-    "location": "1060",
     "img": "",
     "content": ""
   },
@@ -479,27 +407,11 @@
     "img": "",
     "content": ""
   },
-  "风行": {
-    "name": "风行",
-    "type": "智力",
-    "position": "后排",
-    "location": "3030",
-    "img": "",
-    "content": ""
-  },
   "宙斯": {
     "name": "宙斯",
     "type": "智力",
     "position": "中排",
     "location": "2090",
-    "img": "",
-    "content": ""
-  },
-  "熊德": {
-    "name": "熊德",
-    "type": "智力",
-    "position": "后排",
-    "location": "3010",
     "img": "",
     "content": ""
   },
@@ -527,9 +439,9 @@
     "img": "",
     "content": ""
   },
-  "火猫": {
-    "name": "火猫",
-    "type": "敏捷",
+  "死灵": {
+    "name": "死灵",
+    "type": "智力",
     "position": "中排",
     "location": "",
     "img": "",
@@ -543,11 +455,99 @@
     "img": "",
     "content": ""
   },
-  "死灵": {
-    "name": "死灵",
+  "熊德": {
+    "name": "熊德",
     "type": "智力",
-    "position": "中排",
+    "position": "后排",
+    "location": "3010",
+    "img": "",
+    "content": ""
+  },
+  "风行": {
+    "name": "风行",
+    "type": "智力",
+    "position": "后排",
+    "location": "3030",
+    "img": "",
+    "content": ""
+  },
+  "白虎": {
+    "name": "白虎",
+    "type": "敏捷",
+    "position": "后排",
+    "location": "3060",
+    "img": "",
+    "content": ""
+  },
+  "巫医": {
+    "name": "巫医",
+    "type": "智力",
+    "position": "后排",
+    "location": "3050",
+    "img": "",
+    "content": ""
+  },
+  "骨弓": {
+    "name": "骨弓",
+    "type": "敏捷",
+    "position": "后排",
     "location": "",
+    "img": "",
+    "content": ""
+  },
+  "亚龙": {
+    "name": "亚龙",
+    "type": "敏捷",
+    "position": "后排",
+    "location": "",
+    "img": "",
+    "content": ""
+  },
+  "小鹿": {
+    "name": "小鹿",
+    "type": "智力",
+    "position": "后排",
+    "location": "3040",
+    "img": "",
+    "content": ""
+  },
+  "光法": {
+    "name": "光法",
+    "type": "智力",
+    "position": "后排",
+    "location": "3080",
+    "img": "",
+    "content": ""
+  },
+  "火枪": {
+    "name": "火枪",
+    "type": "敏捷",
+    "position": "后排",
+    "location": "3080",
+    "img": "",
+    "content": ""
+  },
+  "复仇": {
+    "name": "复仇",
+    "type": "敏捷",
+    "position": "后排",
+    "location": "3020",
+    "img": "",
+    "content": ""
+  },
+  "蜘蛛": {
+    "name": "蜘蛛",
+    "type": "敏捷",
+    "position": "后排",
+    "location": "",
+    "img": "",
+    "content": ""
+  },
+  "小黑": {
+    "name": "小黑",
+    "type": "敏捷",
+    "position": "后排",
+    "location": "3070",
     "img": "",
     "content": ""
   }
