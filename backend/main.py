@@ -106,6 +106,12 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
     """
     guessed_lineup = []
 
+    """
+    !!!!!
+    !!!!!  进攻方也需要剔除重复的英雄!!!
+    !!!!!
+    """
+
     # 获得明面上的防守方英雄
     known_hero = [i for i in lineup1 if i]
     known_hero += [i for i in lineup2 if i]
@@ -131,7 +137,7 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
         current_defend_pool = known_hero
 
         # 在不忽略英雄池的情况下，如果破解阵容的英雄不在池子里，直接跳过
-        if ignore_hero_pool and not is_subset(attack1, my_hero_pool):
+        if not ignore_hero_pool and not is_subset(attack1, my_hero_pool):
             continue
         # 隐藏阵容不能出现在当前的防守池子中(不能有重复英雄)
         if has_common_element(hidden1, current_defend_pool):
@@ -143,7 +149,7 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
         for item2 in lineups2:
             current_defend_pool2 = copy.deepcopy(current_defend_pool)
             hidden2, defend2, attack2, rate2 = item2[0], item2[1], item2[2], item2[3]
-            if ignore_hero_pool and not is_subset(attack2, my_hero_pool):
+            if not ignore_hero_pool and not is_subset(attack2, my_hero_pool):
                 continue
             if has_common_element(hidden2, current_defend_pool2):
                 continue
@@ -154,7 +160,7 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
             for item3 in lineups3:
                 current_defend_pool3 = copy.deepcopy(current_defend_pool2)
                 hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item3[3]
-                if ignore_hero_pool and not is_subset(attack3, my_hero_pool):
+                if not ignore_hero_pool and not is_subset(attack3, my_hero_pool):
                     continue
                 if has_common_element(hidden3, current_defend_pool3):
                     continue
@@ -172,7 +178,7 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
         for item3 in lineups3:
             current_defend_pool3 = copy.deepcopy(current_defend_pool)
             hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item3[3]
-            if ignore_hero_pool and not is_subset(attack3, my_hero_pool):
+            if not ignore_hero_pool and not is_subset(attack3, my_hero_pool):
                 continue
             if has_common_element(hidden3, current_defend_pool3):
                 continue
@@ -184,7 +190,7 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
     for item2 in lineups2:
         hidden2, defend2, attack2, rate2 = item2[0], item2[1], item2[2], item2[3]
         current_defend_pool = known_hero
-        if ignore_hero_pool and not is_subset(attack2, my_hero_pool):
+        if not ignore_hero_pool and not is_subset(attack2, my_hero_pool):
             continue
         if has_common_element(hidden2, current_defend_pool):
             continue
@@ -194,7 +200,7 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
         for item3 in lineups3:
             current_defend_pool3 = copy.deepcopy(current_defend_pool)
             hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item3[3]
-            if ignore_hero_pool and not is_subset(attack3, my_hero_pool):
+            if not ignore_hero_pool and not is_subset(attack3, my_hero_pool):
                 continue
             if has_common_element(hidden3, current_defend_pool3):
                 continue
@@ -203,9 +209,6 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
                 (tuple(attack3), tuple(defend3), rate3)])
 
     return guessed_lineup
-
-
-
 
 
 def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool=False):
@@ -302,18 +305,27 @@ def generate_latest_attack_lineup():
 
 def run():
     print("小冰冰传奇助手开始运行")
-    my_heros = ["光法", "大鱼", "巨魔", "影魔", "舞姬", "宙斯", "一姐", "发条", "圣堂", "死灵", "潮汐"]
-    defend_lineup = ["潮汐", "全能", "幻刺", "冰女", "暗牧"]
+    my_heros = ["大鱼", "巨魔", "影魔", "舞姬", "宙斯", "修补", "暗牧", "尸王", "骨王", "巫妖", "光法", "人马", "冰女", "小黑",
+                "全能", "潮汐", "天怒", "幻刺", "DP", "一姐", "末日", "巫医", "白虎", "火猫", "剑圣", "神灵"]
+    defend_lineup = ["火猫", "巨魔", "一姐", "圣堂", "白虎"]
     # 获取普通竞技场的破解阵容
     # crack_arena_lineup(my_heros, defend_lineup, True)
+    # return
     # 获取巅峰竞技场的破解阵容
-    lineup1 = ["骨王", "", "", "幻刺", "白虎"]
-    lineup2 = ["潮汐", "全能", "", "巫医", ""]
-    lineup3 = ["末日", "军团", "", "小黑", ""]
-    cracked_lineups = crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3)
+    lineup1 = ["骨王", "", "火猫", "", "圣堂"]
+    lineup2 = ["潮汐", "全能", "", "", "舞姬"]
+    lineup3 = ["末日", "", "流浪", "", "白虎"]
+    cracked_lineups = crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3, False)
     print("巅峰竞技场的阵容破解")
     for item in cracked_lineups:
-        print(item)
+        # [((攻击阵容), (防守阵容), 胜率)), ... x2]
+        res_str = ""
+        for index, value in enumerate(item):
+            res_str += "{}队: 进攻: {}, 防守: {}, 胜率: {}\n".format(index + 1, sort_defend_lineup(list(value[0])), value[1], value[2])
+        res = """
+===============================
+{}===============================""".format(res_str)
+        print(res)
 
 
 if __name__ == '__main__':
