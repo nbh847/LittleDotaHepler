@@ -1,9 +1,11 @@
+import copy
 import json
 import os
 
 import flask
 import pandas as pd
 
+from helper.utils import has_common_element, is_subset
 from module.sqlite3_base import HeroProfile
 
 
@@ -89,7 +91,16 @@ def get_guess_lineup(lineup: list):
     return saved_match_lineup
 
 
-def guess_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, lineup3: list, ignore_hero_pool=False):
+def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, lineup3: list, ignore_hero_pool=False):
+    """
+    根据自己英雄池返回 <巅峰竞技场> 破解阵容
+    :param my_hero_pool: 自己的英雄池
+    :param lineup1: 第一队
+    :param lineup2: 第二队
+    :param lineup3: 第三队
+    :param ignore_hero_pool: 忽视自己的英雄池，直接返回破解阵容
+    :return:
+    """
     """
     猜 <巅峰竞技场> 的阵容;
     巅峰竞技场的防守阵容，每队最多隐藏两个位置，要根据站位情况猜测出隐藏的英雄;
@@ -109,6 +120,7 @@ def guess_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
     known_hero = [i for i in lineup1 if i]
     known_hero += [i for i in lineup2 if i]
     known_hero += [i for i in lineup3 if i]
+    print("known_hero", known_hero)
 
     # 只要猜出两队的防守阵容，就保存这个防守阵容
     # 以第一队作为参考
@@ -121,30 +133,45 @@ def guess_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
     # 排列组合出没有重复英雄的阵容
     for item1 in lineups1:
         hidden1, defend1, attack1, rate1 = item1[0], item1[1], item1[2], item1[3]
+        # 保存当前组合的合格猜测阵容
+        # 阵容的数据结构为元组，保证不可变和顺序性
+        # 样式: [((攻击阵容), (防守阵容), 胜率)), ...x2]
+        # 当前的排列组合里，已经出现的防守阵容里的英雄
+        current_defend_pool = known_hero
 
         # 在不忽略英雄池的情况下，如果破解阵容的英雄不在池子里，直接跳过
-        if not ignore_hero_pool:
-            skip = False
-            for inner_item in attack1:
-                if inner_item not in my_hero_pool:
-                    skip = True
-            if skip:
-                continue
-
+        if not ignore_hero_pool and not is_subset(attack1, my_hero_pool):
+            continue
         # 隐藏阵容不能出现在当前的防守池子中(不能有重复英雄)
+        if has_common_element(hidden1, current_defend_pool):
+            continue
+        # 猜测的隐藏英雄加入当前出现的英雄池子
+        current_defend_pool += hidden1
+
+        # 跟第二队做匹配 - 嵌套
+        for item2 in lineups2:
+            current_defend_pool2 = copy.deepcopy(current_defend_pool)
+            hidden2, defend2, attack2, rate2 = item2[0], item2[1], item2[2], item2[3]
+            if not ignore_hero_pool and not is_subset(attack2, my_hero_pool):
+                continue
+            if has_common_element(hidden2, current_defend_pool):
+                continue
+            current_defend_pool2 += hidden2
+            # 到这里说明已经产生了合格的两队破解阵容
+            guessed_lineup.append([(tuple(attack1), tuple(defend1), tuple(rate1)), (tuple(attack2), tuple(defend2), tuple(rate2))])
+
+            # 跟第三队做匹配 - 嵌套
+            for item3 in lineups3:
+                current_defend_pool3 = copy.deepcopy(current_defend_pool)
+                hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item[3]
+                if not ignore_hero_pool and not is_subset(attack2, my_hero_pool):
+                    continue
+                if has_common_element(hidden2, current_defend_pool):
+                    continue
+                
 
 
-def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, lineup3: list, ignore_hero_pool=False):
-    """
-    根据自己英雄池返回 <巅峰竞技场> 破解阵容
-    :param my_hero_pool: 自己的英雄池
-    :param lineup1: 第一队
-    :param lineup2: 第二队
-    :param lineup3: 第三队
-    :param ignore_hero_pool: 忽视自己的英雄池，直接返回破解阵容
-    :return:
-    """
-    guess_peak_arena_lineup(my_hero_pool, lineup1, lineup2, lineup3, ignore_hero_pool)
+
 
 
 def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool=False):
@@ -242,7 +269,7 @@ def generate_latest_attack_lineup():
 def run():
     print("小冰冰传奇助手开始运行")
     my_heros = ["光法", "大鱼", "巨魔", "影魔", "舞姬", "宙斯", "一姐", "发条", "圣堂", "死灵", "潮汐"]
-    defend_lineup = ["潮汐", "全能", "幻刺", "巫医", "暗牧"]
+    defend_lineup = ["潮汐", "全能", "幻刺", "冰女", "暗牧"]
     # 获取普通竞技场的破解阵容
     # crack_arena_lineup(my_heros, defend_lineup, True)
     # 获取巅峰竞技场的破解阵容
