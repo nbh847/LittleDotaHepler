@@ -93,15 +93,6 @@ def get_guess_lineup(lineup: list):
 
 def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, lineup3: list, ignore_hero_pool=False):
     """
-    根据自己英雄池返回 <巅峰竞技场> 破解阵容
-    :param my_hero_pool: 自己的英雄池
-    :param lineup1: 第一队
-    :param lineup2: 第二队
-    :param lineup3: 第三队
-    :param ignore_hero_pool: 忽视自己的英雄池，直接返回破解阵容
-    :return:
-    """
-    """
     猜 <巅峰竞技场> 的阵容;
     巅峰竞技场的防守阵容，每队最多隐藏两个位置，要根据站位情况猜测出隐藏的英雄;
     防守方显示的站位顺序跟进攻方完全相反，前排是站在左边；
@@ -114,7 +105,6 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
     :return:
     """
     guessed_lineup = []
-    profiles = get_hero_profiles()
 
     # 获得明面上的防守方英雄
     known_hero = [i for i in lineup1 if i]
@@ -131,6 +121,7 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
     lineups3 = get_guess_lineup(lineup3)
 
     # 排列组合出没有重复英雄的阵容
+    # 第一二三队做排列组合
     for item1 in lineups1:
         hidden1, defend1, attack1, rate1 = item1[0], item1[1], item1[2], item1[3]
         # 保存当前组合的合格猜测阵容
@@ -140,7 +131,7 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
         current_defend_pool = known_hero
 
         # 在不忽略英雄池的情况下，如果破解阵容的英雄不在池子里，直接跳过
-        if not ignore_hero_pool and not is_subset(attack1, my_hero_pool):
+        if ignore_hero_pool and not is_subset(attack1, my_hero_pool):
             continue
         # 隐藏阵容不能出现在当前的防守池子中(不能有重复英雄)
         if has_common_element(hidden1, current_defend_pool):
@@ -152,23 +143,66 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
         for item2 in lineups2:
             current_defend_pool2 = copy.deepcopy(current_defend_pool)
             hidden2, defend2, attack2, rate2 = item2[0], item2[1], item2[2], item2[3]
-            if not ignore_hero_pool and not is_subset(attack2, my_hero_pool):
+            if ignore_hero_pool and not is_subset(attack2, my_hero_pool):
                 continue
-            if has_common_element(hidden2, current_defend_pool):
+            if has_common_element(hidden2, current_defend_pool2):
                 continue
             current_defend_pool2 += hidden2
-            # 到这里说明已经产生了合格的两队破解阵容
-            guessed_lineup.append([(tuple(attack1), tuple(defend1), tuple(rate1)), (tuple(attack2), tuple(defend2), tuple(rate2))])
 
             # 跟第三队做匹配 - 嵌套
+            inner_flag = False  # 如果第三队有破解阵容，则在第三队里添加破解阵容，否则就在第二队里添加破解阵容
             for item3 in lineups3:
-                current_defend_pool3 = copy.deepcopy(current_defend_pool)
-                hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item[3]
-                if not ignore_hero_pool and not is_subset(attack2, my_hero_pool):
+                current_defend_pool3 = copy.deepcopy(current_defend_pool2)
+                hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item3[3]
+                if ignore_hero_pool and not is_subset(attack3, my_hero_pool):
                     continue
-                if has_common_element(hidden2, current_defend_pool):
+                if has_common_element(hidden3, current_defend_pool3):
                     continue
-                
+                inner_flag = True
+                guessed_lineup.append([
+                    (tuple(attack1), tuple(defend1), rate1),
+                    (tuple(attack2), tuple(defend2), rate2),
+                    (tuple(attack3), tuple(defend3), rate3)])
+            if not inner_flag:
+                guessed_lineup.append([
+                    (tuple(attack1), tuple(defend1), rate1),
+                    (tuple(attack2), tuple(defend2), rate2)])
+
+        # 跟第三队做匹配 - 嵌套
+        for item3 in lineups3:
+            current_defend_pool3 = copy.deepcopy(current_defend_pool)
+            hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item3[3]
+            if ignore_hero_pool and not is_subset(attack3, my_hero_pool):
+                continue
+            if has_common_element(hidden3, current_defend_pool3):
+                continue
+            guessed_lineup.append([
+                (tuple(attack1), tuple(defend1), rate1),
+                (tuple(attack3), tuple(defend3), rate3)])
+
+    # 第二三队做排列组合
+    for item2 in lineups2:
+        hidden2, defend2, attack2, rate2 = item2[0], item2[1], item2[2], item2[3]
+        current_defend_pool = known_hero
+        if ignore_hero_pool and not is_subset(attack2, my_hero_pool):
+            continue
+        if has_common_element(hidden2, current_defend_pool):
+            continue
+        current_defend_pool += hidden2
+
+        # 跟第三队做匹配 - 嵌套
+        for item3 in lineups3:
+            current_defend_pool3 = copy.deepcopy(current_defend_pool)
+            hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item3[3]
+            if ignore_hero_pool and not is_subset(attack3, my_hero_pool):
+                continue
+            if has_common_element(hidden3, current_defend_pool3):
+                continue
+            guessed_lineup.append([
+                (tuple(attack2), tuple(defend2), rate2),
+                (tuple(attack3), tuple(defend3), rate3)])
+
+    return guessed_lineup
 
 
 
@@ -276,7 +310,10 @@ def run():
     lineup1 = ["骨王", "", "", "幻刺", "白虎"]
     lineup2 = ["潮汐", "全能", "", "巫医", ""]
     lineup3 = ["末日", "军团", "", "小黑", ""]
-    crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3)
+    cracked_lineups = crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3)
+    print("巅峰竞技场的阵容破解")
+    for item in cracked_lineups:
+        print(item)
 
 
 if __name__ == '__main__':
