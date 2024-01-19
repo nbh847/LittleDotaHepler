@@ -133,13 +133,13 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
         # 保存当前组合的合格猜测阵容
         # 阵容的数据结构为元组，保证不可变和顺序性
         # 样式: [((攻击阵容), (防守阵容), 胜率)), ...x2]
-        # 当前的排列组合里，已经出现的防守阵容里的英雄
+        # 当前的排列组合里，已经出现的防守阵容和攻击阵容里的英雄
         current_defend_pool = known_hero
 
         # 在不忽略英雄池的情况下，如果破解阵容的英雄不在池子里，直接跳过
         if not ignore_hero_pool and not is_subset(attack1, my_hero_pool):
             continue
-        # 隐藏阵容不能出现在当前的防守池子中(不能有重复英雄)
+        # 隐藏阵容不能出现在当前的防守池子中(不能有重复英雄), 攻击阵容也不能重复(第一队的攻击阵容肯定不会重复)
         if has_common_element(hidden1, current_defend_pool):
             continue
         # 猜测的隐藏英雄加入当前出现的英雄池子
@@ -148,21 +148,24 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
         # 跟第二队做匹配 - 嵌套
         for item2 in lineups2:
             current_defend_pool2 = copy.deepcopy(current_defend_pool)
+            current_attack_pool2 = copy.deepcopy(attack1)
             hidden2, defend2, attack2, rate2 = item2[0], item2[1], item2[2], item2[3]
             if not ignore_hero_pool and not is_subset(attack2, my_hero_pool):
                 continue
-            if has_common_element(hidden2, current_defend_pool2):
+            if has_common_element(hidden2, current_defend_pool2) or has_common_element(attack2, current_attack_pool2):
                 continue
             current_defend_pool2 += hidden2
+            current_attack_pool2 += attack2
 
             # 跟第三队做匹配 - 嵌套
             inner_flag = False  # 如果第三队有破解阵容，则在第三队里添加破解阵容，否则就在第二队里添加破解阵容
             for item3 in lineups3:
                 current_defend_pool3 = copy.deepcopy(current_defend_pool2)
+                current_attack_pool3 = copy.deepcopy(current_attack_pool2)
                 hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item3[3]
                 if not ignore_hero_pool and not is_subset(attack3, my_hero_pool):
                     continue
-                if has_common_element(hidden3, current_defend_pool3):
+                if has_common_element(hidden3, current_defend_pool3) or has_common_element(attack3, current_attack_pool3):
                     continue
                 inner_flag = True
                 guessed_lineup.append([
@@ -177,10 +180,11 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
         # 跟第三队做匹配 - 嵌套
         for item3 in lineups3:
             current_defend_pool3 = copy.deepcopy(current_defend_pool)
+            current_attack_pool3 = copy.deepcopy(attack1)
             hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item3[3]
             if not ignore_hero_pool and not is_subset(attack3, my_hero_pool):
                 continue
-            if has_common_element(hidden3, current_defend_pool3):
+            if has_common_element(hidden3, current_defend_pool3) or has_common_element(attack3, current_attack_pool3):
                 continue
             guessed_lineup.append([
                 (tuple(attack1), tuple(defend1), rate1),
@@ -199,10 +203,11 @@ def crack_peak_arena_lineup(my_hero_pool: list, lineup1: list, lineup2: list, li
         # 跟第三队做匹配 - 嵌套
         for item3 in lineups3:
             current_defend_pool3 = copy.deepcopy(current_defend_pool)
+            current_attack_pool3 = copy.deepcopy(attack2)
             hidden3, defend3, attack3, rate3 = item3[0], item3[1], item3[2], item3[3]
             if not ignore_hero_pool and not is_subset(attack3, my_hero_pool):
                 continue
-            if has_common_element(hidden3, current_defend_pool3):
+            if has_common_element(hidden3, current_defend_pool3) or has_common_element(attack3, current_attack_pool3):
                 continue
             guessed_lineup.append([
                 (tuple(attack2), tuple(defend2), rate2),
