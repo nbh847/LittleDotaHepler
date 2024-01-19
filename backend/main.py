@@ -34,8 +34,14 @@ def peak_arena_lineup():
     :return:
     """
     if request.method == 'POST':
-        defend_lineup = ["火猫", "巨魔", "一姐", "圣堂", "白虎"]
-        return crack_peak_arena_lineup_entry(defend_lineup)
+        try:
+            body = request.data
+            body = json.loads(body)
+            return crack_peak_arena_lineup_entry(body["lineup1"], body["lineup2"], body["lineup3"])
+        except Exception as e:
+            err_msg = "普通竞技场 error:{}".format(e.args[0])
+            print(err_msg)
+            return err_msg
     else:
         return "请发POST请求获取数据"
 

@@ -89,7 +89,7 @@ def get_guess_lineup(lineup: list):
                 hidden_lineup1.append(defend_lineup[index])
         # [[隐藏的英雄], [可能的防守阵容], [对应的破解阵容], 胜率]
         saved_match_lineup.append([hidden_lineup1, defend_lineup, attack_lineup, rate])
-    print("可能匹配的阵容数据", saved_match_lineup)
+    # print("可能匹配的阵容数据", saved_match_lineup)
     return saved_match_lineup
 
 
@@ -322,20 +322,25 @@ def crack_arena_lineup_entry(defend_lineup: list):
     return crack_arena_lineup(my_heros, defend_lineup)
 
 
-def crack_peak_arena_lineup_entry():
+def crack_peak_arena_lineup_entry(lineup1: list, lineup2: list, lineup3: list):
     # 获取巅峰竞技场的破解阵容
     print("巅峰竞技场的阵容破解")
-    lineup1 = ["骨王", "", "火猫", "", "圣堂"]
-    lineup2 = ["潮汐", "全能", "", "", "舞姬"]
-    lineup3 = ["末日", "", "流浪", "", "白虎"]
+    result = []
+    # lineup1 = ["骨王", "", "火猫", "", "圣堂"]
+    # lineup2 = ["潮汐", "全能", "", "", "舞姬"]
+    # lineup3 = ["末日", "", "流浪", "", "白虎"]
     cracked_lineups = crack_peak_arena_lineup(my_heros, lineup1, lineup2, lineup3, False)
     for item in cracked_lineups:
         # [((攻击阵容), (防守阵容), 胜率)), ... x2]
         res_str = ""
+        inner_res = []
         for index, value in enumerate(item):
             res_str += "{}队: 进攻: {}, 防守: {}, 胜率: {}\n".format(index + 1, sort_defend_lineup(list(value[0])), value[1], value[2])
+            inner_res.append("{}队: 进攻: {}, 防守: {}, 胜率: {}".format(index + 1, sort_defend_lineup(list(value[0])), value[1], value[2]))
+        result.append(inner_res)
         res = """
 ===============================
 {}===============================""".format(res_str)
-        print(res)
+        # print(res)
     print("当前阵容的破解数量为:{}".format(len(cracked_lineups)))
+    return result
