@@ -226,6 +226,7 @@ def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool
     :param ignore_hero_pool: 忽视自己的英雄池，直接返回破解阵容
     :return:
     """
+    result = {}
     heros = sort_defend_lineup(defend_lineup)
     print("对方阵容", heros)
 
@@ -245,11 +246,16 @@ def crack_arena_lineup(my_hero_pool: list, defend_lineup: list, ignore_hero_pool
                     has_matched_hero = False
                     break
             if ignore_hero_pool:
-                print("破解阵容", lineup)
-                print("胜率", rate)
+                result = {
+                    "破解阵容": lineup,
+                    "胜率": rate
+                }
             elif has_matched_hero:
-                print("破解阵容", lineup)
-                print("胜率", rate)
+                result = {
+                    "破解阵容": lineup,
+                    "胜率": rate
+                }
+    return result
 
 
 def generate_latest_attack_lineup():
@@ -310,11 +316,10 @@ def generate_latest_attack_lineup():
     print("生成破解阵容的数据完毕，保存到了数据库")
 
 
-def crack_arena_lineup_entry():
+def crack_arena_lineup_entry(defend_lineup: list):
     # 获取普通竞技场的破解阵容
     print("普通竞技场的阵容破解")
-    defend_lineup = ["火猫", "巨魔", "一姐", "圣堂", "白虎"]
-    crack_arena_lineup(my_heros, defend_lineup, True)
+    return crack_arena_lineup(my_heros, defend_lineup)
 
 
 def crack_peak_arena_lineup_entry():
