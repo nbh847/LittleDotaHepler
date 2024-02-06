@@ -1,0 +1,53 @@
+name: update_public_data
+on:
+  push:
+    branches: [ master ]
+    paths:
+      - public/blog_store/posts/**/*
+      - public/blog_store/assets/**/*
+
+jobs:
+
+  build_index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+
+      - uses: actions/setup-node@v3
+      
+      - run: |
+          npm i
+          npm run generate:index
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: data_artifact
+          path: public/blog_store
+  
+  deploy_data:
+    runs-on: ubuntu-latest
+    needs: build_index
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+
+      - run: rm -rf data
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: data_artifact
+          path: blog_store
+
+      - run: |
+          git config --local user.email "posts_hook@github.com"
+          git config --local user.name "Posts Hook"
+          git add blog_store
+          git commit -m "[CI:deploy] deploy_data job"
+          
+      - uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}

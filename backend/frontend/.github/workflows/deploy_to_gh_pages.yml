@@ -1,0 +1,75 @@
+name: deploy_to_gh_pages
+on:
+  release:
+    types: [ created ]
+
+jobs:
+
+  sync_badges:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+      
+      - run: |
+          rm -rf .ci_badges
+          npx setup-gh-badges
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .ci_badges
+          git commit -m "[CI:deploy] sync_badges job"
+
+      - uses: ad-m/github-push-action@master
+        with:
+          branch: master
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  build_dist:
+    runs-on: ubuntu-latest
+    needs: sync_badges
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: master
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - run: |
+          npm i
+          npm run generate:index
+          npm run build
+      - uses: actions/upload-artifact@v2
+        with:
+          name: dist_artifact
+          path: dist/**/*
+  
+  deploy_dist:
+    runs-on: ubuntu-latest
+    needs: build_dist
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          ref: gh-pages
+
+      - run: rm -rf ./*
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: dist_artifact
+          path: ./
+
+      - run: |
+          ## Uncomment if deploying with custom domain enabled in your repo's GitHub pages settings. Must match your (sub)domain name
+          # echo "your.domain.com" > CNAME
+          git config --local user.email "posts_hook@github.com"
+          git config --local user.name "Posts Hook"
+          git add .
+          git commit -m "[CI:deploy] deploy_dist job"
+
+      - uses: ad-m/github-push-action@master
+        with:
+          branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
