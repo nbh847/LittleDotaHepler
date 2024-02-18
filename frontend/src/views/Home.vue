@@ -21,39 +21,33 @@
         <div class="col border">
           <h3>Defend Area</h3>
           <hr>
-
+          <img style="height: 100px; width: 100px; margin: 3px; background-color: rgba(255,0,0,0.1);" class="rounded" src="../assets/logo.png">
+          <img style="height: 100px; width: 100px; margin: 3px; background-color: rgba(255,0,0,0.1);" class="rounded" src="../assets/logo.png">
+          <img style="height: 100px; width: 100px; margin: 3px; background-color: rgba(255,0,0,0.1);" class="rounded" src="../assets/logo.png">
+          <img style="height: 100px; width: 100px; margin: 3px; background-color: rgba(255,0,0,0.1);" class="rounded" src="../assets/logo.png">
+          <img style="height: 100px; width: 100px; margin: 3px; background-color: rgba(255,0,0,0.1);" class="rounded" src="../assets/logo.png">
         </div>
       </div>
       <hr>
 
-      <h3>
-        Show Area
-      </h3>
+      <h3> Hero Pool </h3>
+      <div class="col border">
+        <h4>Selected Items</h4>
+        <div class="row border">
+          <div class="col-md-12">
+            <ul class="group" style="height: 300px; overflow-y: auto;">
+              <img v-for="i in 50" :key="i" style="height: 100px; width: 100px; margin: 3px; background-color: rgba(255,0,0,0.1);" class="rounded" src="../assets/logo.png">
+            </ul>
+          </div>
+        </div>
+      </div>
 
-    </div>
+      <br>
+      <div class="text-center">
+        <button type="button" class="btn btn-primary">Submit</button>
+      </div>
 
-    <div v-for="entry in pageStatus.visiblePosts" :key="entry.id" class="container markdown-body p-3 p-md-4">
-      <!-- TITLE -->
-      <router-link :to="`/${entry.section}/${entry.id}`" class="text-reset">
-        <h3 class="text-left m-0 p-0">
-          {{ entry.title }}
-        </h3>
-      </router-link>
 
-      <!-- Arena Area -->
-      <p class="font-weight-light font-italic m-0 p-0" :class="!section ? 'text-right' : 'mb-3'">
-        {{ entry.date }}
-      </p>
-      <router-link v-if="!section" :to="`/${entry.section}`" class="text-reset">
-        <h6 class="m-0 p-0 text-right font-weight-bold">
-          #{{ entry.section }}
-        </h6>
-      </router-link>
-
-      <!-- POST INTRO -->
-      <p class="font-weight-light mt-1">
-        {{ entry.description }}
-      </p>
     </div>
 
   </div>
